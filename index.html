@@ -26,7 +26,7 @@
   .card {
     background: #ffffff;
     width: 100%;
-    max-width: 420px;
+    max-width: 480px; /* aumentado */
     border-radius: 16px;
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
     overflow: hidden;
@@ -35,35 +35,18 @@
   }
 
   .card-inner {
-    padding: 40px 36px 32px;
+    padding: 48px 44px 40px; /* padding maior também */
   }
 
   .logo {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 32px;
+    margin-bottom: 36px;
   }
 
-  .logo-icon {
-    width: 36px;
-    height: 36px;
-  }
-
-  .logo-text {
-    font-size: 15px;
-    font-weight: 700;
-    color: #1a1a2e;
-    letter-spacing: 0.3px;
-    line-height: 1.15;
-  }
-
-  .logo-text span {
-    display: block;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 1.2px;
-    color: #1a1a2e;
+  .logo img {
+    height: 38px;
+    width: auto;
   }
 
   h1 {
@@ -77,18 +60,18 @@
   .subtitle {
     font-size: 14px;
     color: #5b5675;
-    margin-bottom: 28px;
+    margin-bottom: 32px;
     line-height: 1.45;
   }
 
   .field {
-    margin-bottom: 24px;
+    margin-bottom: 28px;
   }
 
   input[type="text"],
   input[type="email"] {
     width: 100%;
-    padding: 14px 16px;
+    padding: 15px 16px;
     border: 1px solid #d1d5db;
     border-radius: 8px;
     font-size: 15px;
@@ -113,12 +96,12 @@
     color: white;
     border: none;
     border-radius: 8px;
-    padding: 15px;
+    padding: 16px;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
     transition: background 0.2s;
-    margin-bottom: 20px;
+    margin-bottom: 22px;
   }
 
   .btn-continue:hover {
@@ -127,7 +110,7 @@
 
   .create-account {
     text-align: center;
-    margin-bottom: 28px;
+    margin-bottom: 30px;
   }
 
   .create-account a {
@@ -144,7 +127,7 @@
   .divider {
     height: 1px;
     background: #e5e7eb;
-    margin-bottom: 20px;
+    margin-bottom: 22px;
   }
 
   .regain {
@@ -169,15 +152,9 @@
   <div class="card">
     <div class="card-inner">
       
+      <!-- Logo oficial -->
       <div class="logo">
-        <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M8 28L20 6L32 28H26L20 16L14 28H8Z" fill="#E11D48"/>
-          <path d="M14 28L20 18L26 28H14Z" fill="#BE123C"/>
-        </svg>
-        <div class="logo-text">
-          LATAM
-          <span>AIRLINES</span>
-        </div>
+        <img src="logo.png" alt="LATAM Airlines">
       </div>
 
       <h1>Please enter your user ID</h1>
@@ -216,7 +193,6 @@
     e.preventDefault();
     const userId = document.getElementById('userId').value.trim();
     console.log('User ID:', userId);
-    // Aqui você pode redirecionar pra tela de senha depois
   });
 </script>
 
