@@ -15,14 +15,12 @@
 
   body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: #f3f0f9;
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-image: url("data:image/svg+xml,%3Csvg width='1200' height='800' viewBox='0 0 1200 800' xmlns='http://www.w3.org/2000/svg'%3E%3Crect fill='%23f3f0f9' width='1200' height='800'/%3E%3Cpath d='M0 500 Q300 420 600 480 T1200 450 V800 H0 Z' fill='%23e8e0f5' opacity='0.6'/%3E%3Cpath d='M0 550 Q400 480 800 520 T1200 500 V800 H0 Z' fill='%23ddd4f0' opacity='0.5'/%3E%3Ccircle cx='180' cy='180' r='40' fill='%23e0d6f5' opacity='0.5'/%3E%3Ccircle cx='280' cy='140' r='25' fill='%23e0d6f5' opacity='0.4'/%3E%3Ccircle cx='900' cy='160' r='35' fill='%23e0d6f5' opacity='0.45'/%3E%3Ccircle cx='1000' cy='120' r='20' fill='%23e0d6f5' opacity='0.4'/%3E%3Cpath d='M150 220 L280 180 L320 200 L200 250 Z' fill='%23d4c8f0' opacity='0.6'/%3E%3Cpath d='M950 200 L1050 170 L1080 190 L1000 230 Z' fill='%23d4c8f0' opacity='0.5'/%3E%3Crect x='50' y='480' width='180' height='90' rx='8' fill='%23dcd2f0' opacity='0.7'/%3E%3Crect x='80' y='500' width='30' height='40' fill='%23c9bce8'/%3E%3Crect x='130' y='500' width='30' height='40' fill='%23c9bce8'/%3E%3Crect x='1000' y='420' width='40' height='180' fill='%23d4c8f0' opacity='0.8'/%3E%3Crect x='1045' y='380' width='30' height='40' fill='%23d4c8f0' opacity='0.7'/%3E%3Cpath d='M1020 380 L1050 340 L1080 380' fill='none' stroke='%23c9bce8' stroke-width='4'/%3E%3C/svg%3E");
+    background: #ffffff url('bg.png') no-repeat center bottom;
     background-size: cover;
-    background-position: center;
   }
 
   .card {
@@ -33,6 +31,7 @@
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
     overflow: hidden;
     border-top: 4px solid #2b1e6b;
+    margin: 20px;
   }
 
   .card-inner {
@@ -126,10 +125,6 @@
     background: #be123c;
   }
 
-  .btn-continue:active {
-    background: #9f1239;
-  }
-
   .create-account {
     text-align: center;
     margin-bottom: 28px;
@@ -167,15 +162,6 @@
   .regain a:hover {
     text-decoration: underline;
   }
-
-  @media (max-width: 480px) {
-    .card-inner {
-      padding: 32px 24px 28px;
-    }
-    h1 {
-      font-size: 22px;
-    }
-  }
 </style>
 </head>
 <body>
@@ -183,12 +169,10 @@
   <div class="card">
     <div class="card-inner">
       
-      <!-- Logo -->
       <div class="logo">
         <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M8 28L20 6L32 28H26L20 16L14 28H8Z" fill="#E11D48"/>
           <path d="M14 28L20 18L26 28H14Z" fill="#BE123C"/>
-          <path d="M18 22H22L20 18L18 22Z" fill="#E11D48"/>
         </svg>
         <div class="logo-text">
           LATAM
@@ -231,12 +215,8 @@
   document.getElementById('loginForm').addEventListener('submit', function(e) {
     e.preventDefault();
     const userId = document.getElementById('userId').value.trim();
-    
-    // Aqui você captura o user ID
-    console.log('User ID capturado:', userId);
-    
-    // Depois redireciona ou mostra a tela de senha
-    // window.location.href = 'password.html'; // se for multi-step
+    console.log('User ID:', userId);
+    // Aqui você pode redirecionar pra tela de senha depois
   });
 </script>
 
